@@ -93,19 +93,3 @@ func (store *RedisTokenStore) GetByAccess(access string) (oauth2.TokenInfo, erro
 func (store *RedisTokenStore) GetByRefresh(refresh string) (oauth2.TokenInfo, error) {
 	return store.getTokenInfoByKey(refresh)
 }
-
-// GetByID according to the ID for the client information
-func (store *RedisTokenStore) GetByID(id string) (cli oauth2.ClientInfo, err error) {
-	return store.getClientInfoByKey(id)
-}
-
-// Set set client information
-func (cs *RedisTokenStore) Set(id string, cli oauth2.ClientInfo) (err error) {
-	cs.Lock()
-	defer cs.Unlock()
-
-	if err := cs.client.Set(id, cli, 0).Err(); err != nil {
-		panic(err)
-	}
-	return err
-}
