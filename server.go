@@ -8,13 +8,14 @@ import (
 	"gopkg.in/oauth2.v3/manage"
 	"gopkg.in/oauth2.v3/models"
 	"gopkg.in/oauth2.v3/server"
-	"gopkg.in/oauth2.v3/store"
+
+	"github.com/marko-ciric/tokens/store"
 )
 
 func main() {
 	manager := manage.NewDefaultManager()
 	// token memory store
-	manager.MustTokenStorage(store.NewMemoryTokenStore())
+	manager.MustTokenStorage(store.NewTokenStore(), nil)
 
 	// client memory store
 	clientStore := store.NewClientStore()
@@ -26,6 +27,7 @@ func main() {
 	manager.MapClientStorage(clientStore)
 
 	srv := server.NewDefaultServer(manager)
+
 	srv.SetAllowGetAccessRequest(true)
 	srv.SetClientInfoHandler(server.ClientFormHandler)
 
