@@ -7,7 +7,6 @@ import (
 	"sync"
 
 	"github.com/go-redis/redis"
-	"github.com/marko-ciric/tokens/models"
 	"gopkg.in/oauth2.v3"
 )
 
@@ -54,11 +53,11 @@ func (store *RedisTokenStore) getStringByKey(key string) (string, error) {
 	val, err := store.client.Get(key).Result()
 	if err == redis.Nil {
 		fmt.Printf("Token %s does not exist", key)
-		return nil, err
+		return "", err
 	} else if err != nil {
-		return nil, err
+		return "", err
 	}
-	return val
+	return val, nil
 }
 
 func (store *RedisTokenStore) getTokenInfoByKey(key string) (oauth2.TokenInfo, error) {
@@ -84,15 +83,15 @@ func (store *RedisTokenStore) getClientInfoByKey(key string) (oauth2.ClientInfo,
 }
 
 func (store *RedisTokenStore) GetByCode(code string) (oauth2.TokenInfo, error) {
-	return store.getByStringKey(code)
+	return store.getTokenInfoByKey(code)
 }
 
 func (store *RedisTokenStore) GetByAccess(access string) (oauth2.TokenInfo, error) {
-	return store.getByStringKey(access)
+	return store.getTokenInfoByKey(access)
 }
 
 func (store *RedisTokenStore) GetByRefresh(refresh string) (oauth2.TokenInfo, error) {
-	return store.getByStringKey(refresh)
+	return store.getTokenInfoByKey(refresh)
 }
 
 // GetByID according to the ID for the client information
