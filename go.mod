@@ -15,6 +15,7 @@ require (
 	github.com/smartystreets/goconvey v0.0.0-20181108003508-044398e4856c
 	golang.org/x/crypto v0.0.0-20190611184440-5c40567a22f8 // indirect
 	golang.org/x/oauth2 v0.0.0-20190523182746-aaccbc9213b0 // indirect
+	golang.org/x/tools/gopls v0.1.3 // indirect
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6 // indirect
 	gopkg.in/oauth2.v3 v3.10.0
 	gopkg.in/yaml.v1 v1.0.0-20140924161607-9f9df34309c0
