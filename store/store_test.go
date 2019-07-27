@@ -8,5 +8,9 @@ import (
 )
 
 var _ = Describe("Store", func() {
+	Context("When token provided", func() {
+		It("Saves successfully", func() {
+		})
+	})
 
 })
