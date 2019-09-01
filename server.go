@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/go-redis/redis"
 	"log"
 	"net/http"
 
@@ -10,15 +11,17 @@ import (
 	"gopkg.in/oauth2.v3/server"
 
 	"github.com/marko-ciric/tokens/store"
+	"github.com/marko-ciric/tokens/util"
 )
 
 func main() {
+	redisClient := redis.NewClient(util.NewRedisOptions())
 	manager := manage.NewDefaultManager()
 	// token memory store
-	manager.MustTokenStorage(store.NewTokenStore(), nil)
+	manager.MustTokenStorage(store.NewTokenStore(redisClient), nil)
 
 	// client memory store
-	clientStore := store.NewClientStore()
+	clientStore := store.NewClientStore(redisClient)
 	clientStore.Set("000000", &models.Client{
 		ID:     "000000",
 		Secret: "999999",

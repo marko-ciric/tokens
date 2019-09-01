@@ -3,7 +3,6 @@ package store
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"sync"
 
 	"github.com/go-redis/redis"
@@ -11,14 +10,8 @@ import (
 )
 
 // NewTokenStore create client store
-func NewTokenStore() *RedisTokenStore {
-	return &RedisTokenStore{
-		client: redis.NewClient(&redis.Options{
-			Addr:     fmt.Sprintf("%s:%s", os.Getenv("REDIS_HOST"), os.Getenv("REDIS_PORT")),
-			Password: "", // no password set
-			DB:       0,  // use default DB
-		}),
-	}
+func NewTokenStore(client *redis.Client) *RedisTokenStore {
+	return &RedisTokenStore{client: client}
 }
 
 // RedisTokenStore client information store
@@ -31,7 +24,7 @@ func (store *RedisTokenStore) Create(info oauth2.TokenInfo) error {
 	store.Lock()
 	defer store.Unlock()
 
-	return store.client.Set(info.GetCode(), info, 0).Err()
+	return store.client.Set(info.GetCode(), info.GetAccess(), 0).Err()
 }
 
 func (store *RedisTokenStore) RemoveByCode(code string) error {

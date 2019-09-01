@@ -2,7 +2,6 @@ package store
 
 import (
 	"fmt"
-	"os"
 	"sync"
 
 	"github.com/go-redis/redis"
@@ -11,13 +10,9 @@ import (
 )
 
 // NewClientStore create client store
-func NewClientStore() *RedisClientStore {
+func NewClientStore(client *redis.Client) *RedisClientStore {
 	return &RedisClientStore{
-		client: redis.NewClient(&redis.Options{
-			Addr:     fmt.Sprintf("%s:%s", os.Getenv("REDIS_HOST"), os.Getenv("REDIS_PORT")),
-			Password: "", // no password set
-			DB:       0,  // use default DB
-		}),
+		client: client,
 	}
 }
 
