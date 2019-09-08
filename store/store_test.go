@@ -19,8 +19,10 @@ var _ = Describe("Store", func() {
 	Context("When token provided", func() {
 		var token *models.Token
 		BeforeEach(func() {
-			token = models.NewToken()
+			token := models.NewToken()
 			token.ClientID = "123"
+			token.Code = "123"
+			token.Scope = "read"
 		})
 		It("Saves successfully", func() {
 			Expect(s.Create(token)).To(BeNil())

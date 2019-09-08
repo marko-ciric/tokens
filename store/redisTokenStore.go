@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"sync"
+	"time"
 
 	"github.com/go-redis/redis"
 	"gopkg.in/oauth2.v3"
+	models "gopkg.in/oauth2.v3/models"
 )
 
 // NewTokenStore create client store
@@ -23,8 +25,13 @@ type RedisTokenStore struct {
 func (store *RedisTokenStore) Create(info oauth2.TokenInfo) error {
 	store.Lock()
 	defer store.Unlock()
+	byteArray, err := json.Marshal(info)
+	if err != nil {
+		fmt.Printf("Error encoding token for cliet %s", info.GetClientID())
+		return err
+	}
 
-	return store.client.Set(info.GetCode(), info.GetAccess(), 0).Err()
+	return store.client.Set(info.GetCode(), byteArray, time.Hour).Err()
 }
 
 func (store *RedisTokenStore) RemoveByCode(code string) error {
@@ -59,9 +66,9 @@ func (store *RedisTokenStore) getTokenInfoByKey(key string) (oauth2.TokenInfo, e
 	if err != nil {
 		panic(err)
 	}
-	var info oauth2.TokenInfo
-	json.Unmarshal([]byte(val), &info)
-	return info, nil
+	var info models.Token
+	json.Unmarshal([]byte(val), info)
+	return &info, nil
 }
 
 func (store *RedisTokenStore) getClientInfoByKey(key string) (oauth2.ClientInfo, error) {
@@ -70,9 +77,9 @@ func (store *RedisTokenStore) getClientInfoByKey(key string) (oauth2.ClientInfo,
 	if err != nil {
 		panic(err)
 	}
-	var info oauth2.ClientInfo
+	var info models.Client
 	json.Unmarshal([]byte(val), &info)
-	return info, nil
+	return &info, nil
 }
 
 func (store *RedisTokenStore) GetByCode(code string) (oauth2.TokenInfo, error) {
