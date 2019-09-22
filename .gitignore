@@ -1,3 +1,5 @@
 tokens
 .git
 .vscode
+.idea
+vendor

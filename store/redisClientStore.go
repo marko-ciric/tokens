@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/go-redis/redis"
 	"github.com/marko-ciric/tokens/models"
+
+	"github.com/go-redis/redis"
 	"gopkg.in/oauth2.v3"
 )
 

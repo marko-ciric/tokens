@@ -22,6 +22,7 @@ type RedisTokenStore struct {
 	client *redis.Client
 }
 
+//Create and persist an instance of TokenInfo
 func (store *RedisTokenStore) Create(info oauth2.TokenInfo) error {
 	store.Lock()
 	defer store.Unlock()
@@ -34,14 +35,17 @@ func (store *RedisTokenStore) Create(info oauth2.TokenInfo) error {
 	return store.client.Set(info.GetCode(), byteArray, time.Hour).Err()
 }
 
+//RemoveByCode finds a token by code and removes it from Redis
 func (store *RedisTokenStore) RemoveByCode(code string) error {
 	return store.client.Del(code).Err()
 }
 
+//RemoveByAccess finds a token by code and removes it from Redis
 func (store *RedisTokenStore) RemoveByAccess(access string) error {
 	return store.client.Del(access).Err()
 }
 
+//RemoveByRefresh finds a token by code and removes it from Redis
 func (store *RedisTokenStore) RemoveByRefresh(refresh string) error {
 	return store.client.Del(refresh).Err()
 }
@@ -67,7 +71,7 @@ func (store *RedisTokenStore) getTokenInfoByKey(key string) (oauth2.TokenInfo, e
 		panic(err)
 	}
 	var info models.Token
-	json.Unmarshal([]byte(val), info)
+	json.Unmarshal([]byte(val), &info)
 	return &info, nil
 }
 
@@ -82,14 +86,17 @@ func (store *RedisTokenStore) getClientInfoByKey(key string) (oauth2.ClientInfo,
 	return &info, nil
 }
 
+// GetByCode returns a valid access token by a given authorization_code
 func (store *RedisTokenStore) GetByCode(code string) (oauth2.TokenInfo, error) {
 	return store.getTokenInfoByKey(code)
 }
 
+// GetByAccess returns a valid access token by a given authorization_code
 func (store *RedisTokenStore) GetByAccess(access string) (oauth2.TokenInfo, error) {
 	return store.getTokenInfoByKey(access)
 }
 
+// GetByRefresh returns a valid access token by a given authorization_code
 func (store *RedisTokenStore) GetByRefresh(refresh string) (oauth2.TokenInfo, error) {
 	return store.getTokenInfoByKey(refresh)
 }

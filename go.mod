@@ -4,7 +4,7 @@ go 1.12
 
 require (
 	github.com/go-redis/redis v6.15.2+incompatible
-	github.com/golang/mock v1.3.1
+	github.com/golang/mock v1.3.1 // indirect
 	github.com/marko-ciric/permissions v0.0.0-20190722215313-0a9f8bf7ed6e // indirect
 	github.com/onsi/ginkgo v1.8.0
 	github.com/onsi/gomega v1.5.0
