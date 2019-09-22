@@ -24,11 +24,12 @@ type RedisTokenStore struct {
 
 //Create and persist an instance of TokenInfo
 func (store *RedisTokenStore) Create(info oauth2.TokenInfo) error {
+	fmt.Printf("Token received %s", info)
 	store.Lock()
 	defer store.Unlock()
 	byteArray, err := json.Marshal(info)
 	if err != nil {
-		fmt.Printf("Error encoding token for cliet %s", info.GetClientID())
+		fmt.Printf("Error encoding token for client %s", info.GetClientID())
 		return err
 	}
 

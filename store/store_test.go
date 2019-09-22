@@ -17,17 +17,25 @@ var _ = Describe("Store", func() {
 		s = store.NewTokenStore(redisClient)
 	})
 	Context("When token provided", func() {
-		var token *models.Token
+		var (
+			token          *models.Token
+			persistedToken interface{}
+			err            error
+		)
 		BeforeEach(func() {
-			token := models.NewToken()
+			token = models.NewToken()
 			token.ClientID = "123"
 			token.Code = "123"
 			token.Scope = "read"
 		})
 		It("Saves successfully", func() {
-			Expect(s.Create(token)).To(BeNil())
+			err = s.Create(token)
+			Expect(err).NotTo(HaveOccurred())
 		})
-		It("Gets successfully", func() {
+		It("Gets successfully by access code", func() {
+			persistedToken, err = s.GetByCode(token.Code)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(persistedToken).NotTo(BeNil())
 		})
 	})
 
