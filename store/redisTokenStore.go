@@ -33,6 +33,7 @@ func (store *RedisTokenStore) Create(info oauth2.TokenInfo) error {
 		return err
 	}
 
+	// TODO Save key-value pairs for refresh, access and a unique id as well
 	return store.client.Set(info.GetCode(), byteArray, time.Hour).Err()
 }
 
