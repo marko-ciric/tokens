@@ -31,7 +31,7 @@ var _ = Describe("when token provided", func() {
 	Context("gets by access code", func() {
 		BeforeEach(func() {
 			token = models.NewToken()
-			token.ClientID = "123"
+			token.ClientID = "124"
 			token.Code = "123"
 			token.Scope = "read"
 			err = s.Create(token)

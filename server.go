@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/go-redis/redis"
 	"log"
 	"net/http"
+
+	"github.com/go-redis/redis"
 
 	"gopkg.in/oauth2.v3/errors"
 	"gopkg.in/oauth2.v3/manage"
@@ -22,11 +23,14 @@ func main() {
 
 	// client memory store
 	clientStore := store.NewClientStore(redisClient)
-	clientStore.Set("000000", &models.Client{
+	err := clientStore.Set("000000", &models.Client{
 		ID:     "000000",
 		Secret: "999999",
 		Domain: "http://localhost",
 	})
+	if err != nil {
+		panic(err)
+	}
 	manager.MapClientStorage(clientStore)
 
 	srv := server.NewDefaultServer(manager)
@@ -51,7 +55,10 @@ func main() {
 	})
 
 	http.HandleFunc("/token", func(w http.ResponseWriter, r *http.Request) {
-		srv.HandleTokenRequest(w, r)
+		err := srv.HandleTokenRequest(w, r)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+		}
 	})
 
 	log.Fatal(http.ListenAndServe(":9096", nil))

@@ -34,6 +34,11 @@ func (store *RedisTokenStore) Create(info oauth2.TokenInfo) error {
 	}
 
 	// TODO Save key-value pairs for refresh, access and a unique id as well
+	err = store.client.Set(info.GetClientID(), byteArray, time.Hour).Err()
+	if err != nil {
+		fmt.Printf("Error setting token for %s", info.GetClientID())
+		return err
+	}
 	return store.client.Set(info.GetCode(), byteArray, time.Hour).Err()
 }
 
@@ -73,8 +78,8 @@ func (store *RedisTokenStore) getTokenInfoByKey(key string) (oauth2.TokenInfo, e
 		panic(err)
 	}
 	var info models.Token
-	json.Unmarshal([]byte(val), &info)
-	return &info, nil
+	err = json.Unmarshal([]byte(val), &info)
+	return &info, err
 }
 
 func (store *RedisTokenStore) getClientInfoByKey(key string) (oauth2.ClientInfo, error) {
@@ -84,8 +89,8 @@ func (store *RedisTokenStore) getClientInfoByKey(key string) (oauth2.ClientInfo,
 		panic(err)
 	}
 	var info models.Client
-	json.Unmarshal([]byte(val), &info)
-	return &info, nil
+	err = json.Unmarshal([]byte(val), &info)
+	return &info, err
 }
 
 // GetByCode returns a valid access token by a given authorization_code
