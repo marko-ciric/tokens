@@ -33,13 +33,27 @@ func (store *RedisTokenStore) Create(info oauth2.TokenInfo) error {
 		return err
 	}
 
-	// TODO Save key-value pairs for refresh, access and a unique id as well
 	err = store.client.Set(info.GetClientID(), byteArray, time.Hour).Err()
 	if err != nil {
-		fmt.Printf("Error setting token for %s", info.GetClientID())
+		fmt.Printf("Error setting clientId token mapping for %s", info.GetClientID())
 		return err
 	}
-	return store.client.Set(info.GetCode(), byteArray, time.Hour).Err()
+	err = store.client.Set(info.GetAccess(), byteArray, time.Hour).Err()
+	if err != nil {
+		fmt.Printf("Error setting access token mapping for %s", info.GetClientID())
+		return err
+	}
+	err = store.client.Set(info.GetCode(), byteArray, time.Hour).Err()
+	if err != nil {
+		fmt.Printf("Error setting authorisation code token mapping for %s", info.GetAccess())
+		return err
+	}
+	err = store.client.Set(info.GetRefresh(), byteArray, time.Hour).Err()
+	if err != nil {
+		fmt.Printf("Error setting refresh token mapping for %s", info.GetCode())
+		return err
+	}
+	return nil
 }
 
 //RemoveByCode finds a token by code and removes it from Redis
