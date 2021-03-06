@@ -41,11 +41,16 @@ func (store *RedisClientStore) GetByID(id string) (cli oauth2.ClientInfo, err er
 	return
 }
 
-// Set set client information
+// Set client information
 func (cs *RedisClientStore) Set(id string, cli oauth2.ClientInfo) (err error) {
 	cs.Lock()
 	defer cs.Unlock()
-	if err := cs.client.Set(id, cli, 0).Err(); err != nil {
+	var val string
+	err = models.Marshall(cli, &val)
+	if err != nil {
+		panic(err)
+	}
+	if err = cs.client.Set(id, val, 0).Err(); err != nil {
 		panic(err)
 	}
 	return nil

@@ -3,3 +3,4 @@ tokens
 .vscode
 .idea
 vendor
+/cover.out
